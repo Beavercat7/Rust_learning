@@ -1,17 +1,9 @@
 fn main(){
-    // addition
-    let sum = 5 + 10;
+   let tup:(i32,f64,u8) = (500,6.4,1);
 
-    // subtraction
-    let difference = 95.5 - 4.3;
+   let tup = (500,6.4,1);
+   
+   let (x,y,z) = tup;
 
-    // multiplication
-    let product = 4 * 30;
-
-    // division
-    let quotient = 56.7 / 32.2;
-    let floored = 2 / 3; // Results in 0
-    println!("quotient is {}",quotient);
-    // remainder
-    let remainder = 43 % 5;
+   println!("The value of y is: {}",y);
 }
