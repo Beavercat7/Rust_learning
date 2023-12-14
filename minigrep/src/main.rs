@@ -1,4 +1,5 @@
 use std::env;
+use std::fs;
 
 //为了确保minigrep能够获取传递给它的命令行参数的值
 //我们需要一个Rust标准库提供的函数,也就是std::env::args
@@ -12,4 +13,7 @@ fn main() {
 
    println!("Searching for {}",query);
    println!("In file {}",filename);
+   let contents = fs::read_to_string(filename).expect("Something went wrong reading the file");
+
+   println!("With text:\n{}",contents);
 }
