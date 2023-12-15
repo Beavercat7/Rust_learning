@@ -1,1 +1,1 @@
-/home/jwz/projects/Rust_learning/minigrep/target/debug/project_minigrep: /home/jwz/projects/Rust_learning/minigrep/src/lib.rs /home/jwz/projects/Rust_learning/minigrep/src/main.rs
+/home/jwz/projects/Rust_learning/project_minigrep/target/debug/project_minigrep: /home/jwz/projects/Rust_learning/project_minigrep/src/lib.rs /home/jwz/projects/Rust_learning/project_minigrep/src/main.rs

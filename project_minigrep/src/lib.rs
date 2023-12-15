@@ -28,6 +28,36 @@ impl Config{
 //修改run函数返回Result
 pub fn run(config:Config)->Result<(),Box<dyn Error>>{
    let contents = fs::read_to_string(config.filename)?;
-   println!("With text:\n{}",contents);
+   for line in search(&config.query,&contents){
+      println!("{}",line);;
+   }
    Ok(())
+}
+//开始编写能使测试通过的代码
+pub fn search<'a>(query:&str,contents:&'a str)->Vec<&'a str>{
+   let mut results = Vec::new();
+   //使用line方法遍历每一行
+   for line in contents.lines(){
+      //用查询字符串搜索每一行(增加检查文本行是否包含query中字符串的功能)
+      if line.contains(query){
+         //存储匹配的行
+         results.push(line);
+      }
+   }
+   results
+}
+#[cfg(test)]
+mod tests{
+   use super::*;
+
+   #[test]
+   fn one_result(){
+      let query = "duct";
+      let contents = "\
+Rust: 
+safe,fast,productive.
+Pick three.";
+      assert_eq!(vec!["safe,fast,productive."],search(query,contents));
+   }
+   //在run函数中使用search函数
 }
