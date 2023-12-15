@@ -47,7 +47,67 @@ pub trait Summary{
         format!("(Read more from {}...)",self.summarize_author())
     }
     //为了使用这个版本的Summary,只需在实现trait时定义summarize_author即可
+  
 }
+//trait作为参数
+//如何使用trait来接受多种不同类型的参数
+pub fn notify(item:impl Summary){
+    println!("Breaking news! {}",item.summarize());
+}
+
+//Trait Bound语法
+//impl Trait语法适用于直观的例子,它实际上是一种较长形式的语法糖,我们称为bound
+// pub fn notify<T:Summary>(item:T){
+    
+// }
+// pub fn notify(item1: impl Summary,item2:impl Summary){}
+// 这适用于item1和item2允许是不同类型的情况（只要它们都实现了Summary）
+// 不过如果你希望强制它们是相同类型呢
+// pub fn notify<T:Summary>(item1:T,item:T){}
+// 泛型T被指定为item1和item2的参数限制
+
+// 通过+指定多个trait bound
+// 如果notify需要显示item的格式化形式,同时也要使用summarize方法
+// 那么item就需要同时实现两个不同的trait: Display 和 Summary。 这可以通过+语法实现:
+// pub fn notify(item:impl Summary + Dispaly){}
+// +语法也适用于泛型的trait bound
+// pub fn notify<T:Summary + Display>(item:T){}
+
+// 通过where简化trait bound
+// 使用过多的trait bound也有缺点
+// 在函数签名之后where从句中指定trait bound的语法
+// fn some_function<T:Display + Clone,U:Clone+Debug>(t:T,u:U)->i32
+/*
+   fn some_function<T,U>(t:T,u:U)->i32
+   where
+   {
+     T:Display + Clone,
+     U:Clone + Debug
+   }
+ 
+*/
+use std::fmt::Dispaly;
+struct Pair<T>{
+    x:T,
+    y:T,
+}
+impl<T>Pair<T>{
+    fn new(x:T,y:T)->self{
+        x,
+        y,
+    }
+}
+impl<T:Dispaly + PartialOrd>Pair<T>{
+    fn cmp_dispaly(&self){
+        if self.x >= self.y{
+            println!("")
+        }
+        else {
+            
+        }
+    }
+}
+
 
 impl Summmary for Tweet{
     fn summarize_author(&self)->String{
