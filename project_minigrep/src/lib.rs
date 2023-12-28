@@ -12,14 +12,28 @@ pub struct Config{
 //从new中返回Result而不是调用panic!
 //&'static str是字符串字面值的类型,也是目前的错误信息
 //从main提取逻辑
+
+//args:&[String]
 impl Config{
-    pub fn new(args:&[String])->Result<Config,&'static str>{
-      if args.len() < 3{
-         //panic!("not enough arguments");
-         return Err("not enough arguments");
-      }
-      let query = args[1].clone();
-      let filename = args[2].clone();
+    pub fn new(mut args:std::env::Args)->Result<Config,&'static str>{
+      args.next();
+
+      let query = match args.next(){
+         Some(arg) => arg,
+         None => return Err("Didn't get aa query string"), 
+      };
+
+      let filename = match args.next(){
+         Some(arg) => arg,
+         None => return Err("Didn't get a file name"),
+      };
+
+      // if args.len() < 3{
+      //    //panic!("not enough arguments");
+      //    return Err("not enough arguments");
+      // }
+      //let query = args[1].clone();
+      //let filename = args[2].clone();
       //检查叫做CASE_INSENSITIVE的环境变量
       let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
      
@@ -50,30 +64,39 @@ pub fn run(config:Config)->Result<(),Box<dyn Error>>{
 
 
 //开始编写能使测试通过的代码
+//在search函数实现中使用迭代器适配器
 pub fn search<'a>(query:&str,contents:&'a str)->Vec<&'a str>{
-   let mut results = Vec::new();
-   //使用line方法遍历每一行
-   for line in contents.lines(){
-      //用查询字符串搜索每一行(增加检查文本行是否包含query中字符串的功能)
-      if line.contains(query){
-         //存储匹配的行
-         results.push(line);
-      }
-   }
-   results
+   // let mut results = Vec::new();
+   // //使用line方法遍历每一行
+   // for line in contents.lines(){
+   //    //用查询字符串搜索每一行(增加检查文本行是否包含query中字符串的功能)
+   //    if line.contains(query){
+   //       //存储匹配的行
+   //       results.push(line);
+   //    }
+   // }
+   // results
+   //通过使用迭代器适配器方法来编写更简明的代码,避免可变的中间result vector的使用
+   //函数式编程风格倾向于最小化可变状态的数量来使得代码更简洁。
+   //去掉可变状态可能会使得进行并行搜索的增强会更容易,因为我们不必管理results vector的并发访问
+   contents.lines()
+   .filter(|line|line.contains(query))
+   .collect()
 }
 //它在比较查询和每一行之前将他们都转换为小写
 pub fn search_case_insensitive<'a>(query:&str,contents:&'a str)->Vec<&'a str>{
    let query = query.to_lowercase();
-   let mut results = Vec::new();
+   // let mut results = Vec::new();
 
-   for line in contents.lines()
-   {
-      if line.to_lowercase().contains(&query){
-         results.push(line);
-      }
-   }
-   results
+   // for line in contents.lines()
+   // {
+   //    if line.to_lowercase().contains(&query){
+   //       results.push(line);
+   //    }
+   // }
+   // results
+   //自己根据上诉函数完成的迭代器适配器改造!
+   contents.lines().filter(|line|line.to_lowercase().contains(&query.to_lowercase())).collect()
 }
 //处理环境变量
 //我们将增加一个额外的功能来改进 minigrep：用户可以通过设置环境变量来设置搜索是否是大小写敏感的 。
